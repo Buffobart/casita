@@ -1,0 +1,53 @@
+ALTER TABLE `producto`
+	ADD COLUMN `DescuentoProveedor` FLOAT UNSIGNED NOT NULL AFTER `IdCategoria`,
+	ADD COLUMN `DescuentoVenta` FLOAT UNSIGNED NOT NULL AFTER `DescuentoProveedor`;
+//----------------
+	
+	DROP PROCEDURE IF EXISTS `SP_S_Producto`;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_S_Producto`()
+	LANGUAGE SQL
+	NOT DETERMINISTIC
+	CONTAINS SQL
+	SQL SECURITY DEFINER
+	COMMENT ''
+BEGIN
+		SELECT p.*,c.Descripcion AS categoria
+		FROM producto AS p INNER JOIN categoria AS c ON p.IdCategoria=c.IdCategoria
+		ORDER BY p.IdProducto;
+	END;
+//---------------
+
+DROP PROCEDURE IF EXISTS `SP_S_ProductoPorParametro`;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `SP_S_ProductoPorParametro`(IN `pcriterio` varchar(20), IN `pbusqueda` varchar(50)
+		)
+	LANGUAGE SQL
+	NOT DETERMINISTIC
+	CONTAINS SQL
+	SQL SECURITY DEFINER
+	COMMENT ''
+BEGIN
+	IF pcriterio = "id" THEN
+		SELECT p.*,c.Descripcion AS Categoria
+		FROM producto AS p INNER JOIN categoria AS c ON p.IdCategoria = c.IdCategoria
+		WHERE p.IdProducto=pbusqueda;
+	ELSEIF pcriterio = "codigo" THEN
+		SELECT p.*,c.Descripcion AS Categoria
+		FROM producto AS p INNER JOIN categoria AS c ON p.IdCategoria = c.IdCategoria
+		WHERE p.Codigo=pbusqueda;
+	ELSEIF pcriterio = "nombre" THEN
+		SELECT p.*,c.Descripcion AS Categoria
+		FROM producto AS p INNER JOIN categoria AS c ON p.IdCategoria = c.IdCategoria
+		WHERE p.Nombre LIKE CONCAT("%",pbusqueda,"%");
+	ELSEIF pcriterio = "descripcion" THEN
+		SELECT p.*,c.Descripcion AS Categoria
+		FROM producto AS p INNER JOIN categoria AS c ON p.IdCategoria = c.IdCategoria
+		WHERE p.Descripcion LIKE CONCAT("%",pbusqueda,"%");
+	ELSEIF pcriterio = "categoria" THEN
+		SELECT p.*,c.Descripcion AS Categoria
+		FROM producto AS p INNER JOIN categoria AS c ON p.IdCategoria = c.IdCategoria
+		WHERE c.Descripcion LIKE CONCAT("%",pbusqueda,"%");
+	ELSE
+		SELECT p.*,c.Descripcion AS Categoria
+		FROM producto AS p INNER JOIN categoria AS c ON p.IdCategoria = c.IdCategoria;
+	END IF; 
+	END;
