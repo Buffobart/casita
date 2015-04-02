@@ -13,15 +13,10 @@ import java.awt.Component;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -56,11 +51,14 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
         this.setSize(769, 338);
 
         //---------------------FECHA ACTUAL-------------------------------
-        Date date=new Date();
-        String format=new String("dd/MM/yyyy");
-        SimpleDateFormat formato=new SimpleDateFormat(format);
-        dcFechaini.setDate(date);
-        dcFechafin.setDate(date);
+        //Date date=new Date();
+        //String format=new String("dd/MM/yyyy");
+        //SimpleDateFormat formato=new SimpleDateFormat(format);
+        
+        Calendar cal = Calendar.getInstance(); 
+        dcFechafin.setDate(cal.getTime());
+        cal.add(Calendar.MONTH, -1);
+        dcFechafin.setDate(cal.getTime());
         
         BuscarVenta();
         CrearTabla(); 
@@ -121,7 +119,9 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
     }
   void BuscarVenta(){
         String titulos[]={"ID","Cliente","Fecha","Empleado","Documento","Serie","Número","Estado","Valor Venta","Descuento","Total"};
-        dtm.setColumnIdentifiers(titulos);
+        DefaultTableModel tableModel = new DefaultTableModel(null, titulos);
+        
+        
         
         ClsVenta venta=new ClsVenta();
 
@@ -313,6 +313,8 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
         jButton1 = new javax.swing.JButton();
         lblIdVenta = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
         btnVerDetalle = new javax.swing.JButton();
         lblEstado = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
@@ -347,27 +349,26 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
         getContentPane().add(jScrollPane5);
         jScrollPane5.setBounds(10, 110, 730, 140);
 
-        jPanel1.setBackground(new java.awt.Color(223, 223, 223));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Opciones de busqueda y anulación"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Buscar"));
         jPanel1.setLayout(null);
 
         dcFechaini.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jPanel1.add(dcFechaini);
-        dcFechaini.setBounds(20, 40, 100, 25);
+        dcFechaini.setBounds(130, 30, 100, 25);
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText("DESDE:");
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel1.setText("Fecha inicial:");
         jPanel1.add(jLabel1);
-        jLabel1.setBounds(20, 20, 70, 20);
+        jLabel1.setBounds(130, 10, 80, 20);
 
         dcFechafin.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jPanel1.add(dcFechafin);
-        dcFechafin.setBounds(130, 40, 100, 25);
+        dcFechafin.setBounds(240, 30, 100, 25);
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setText("HASTA:");
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel3.setText("Fecha final:");
         jPanel1.add(jLabel3);
-        jLabel3.setBounds(130, 20, 70, 20);
+        jLabel3.setBounds(240, 10, 80, 20);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Buscar_32.png"))); // NOI18N
         jButton1.setText("Buscar");
@@ -377,7 +378,7 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
             }
         });
         jPanel1.add(jButton1);
-        jButton1.setBounds(250, 20, 110, 50);
+        jButton1.setBounds(380, 20, 110, 50);
         jPanel1.add(lblIdVenta);
         lblIdVenta.setBounds(320, 20, 40, 20);
 
@@ -389,7 +390,14 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
             }
         });
         jPanel1.add(jButton2);
-        jButton2.setBounds(380, 20, 110, 50);
+        jButton2.setBounds(580, 20, 110, 50);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jLabel2.setText("ID Venta:");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(10, 20, 60, 10);
+        jPanel1.add(jTextField1);
+        jTextField1.setBounds(10, 30, 100, 20);
 
         getContentPane().add(jPanel1);
         jPanel1.setBounds(10, 10, 730, 90);
@@ -531,10 +539,12 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblEstado;
     private javax.swing.JLabel lblIdVenta;
     private javax.swing.JTable tblDetalleVenta;

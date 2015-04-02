@@ -11,6 +11,7 @@ import Entidad.ClsEntidadVentaHib;
 import daos.VentaDao;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -99,6 +100,25 @@ public class VentaDaoImpl implements VentaDao{
         session.close();
         
         return ventas;
+    }
+
+    @Override
+    public ClsEntidadVentaHib getById(Integer id) {
+        Session session = HibernateUtil.getInstance().getSession();
+        session.beginTransaction();
+        
+        Query query = session.createQuery( "FROM ClsEntidadVentaHib WHERE IdVenta=:id");
+        query.setParameter("id", id);
+        List<ClsEntidadVentaHib> ventas = query.list();
+        
+        session.close();
+        
+        return ventas.get(0);
+    }
+
+    @Override
+    public List<ClsEntidadVentaHib> searchCotizaciones(Integer id, Date start, Date finish) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }
