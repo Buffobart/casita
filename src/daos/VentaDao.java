@@ -22,8 +22,10 @@ public interface VentaDao {
     
     public List<ClsEntidadVentaHib> getAllVentas();
     public List<ClsEntidadVentaHib> getAllCotizaciones();
-    public ClsEntidadVentaHib getById(Integer id);
-    public List<ClsEntidadVentaHib> searchCotizaciones(Integer id, Date start, Date finish);
+    public ClsEntidadVentaHib getVentaById(Integer id);
+    public ClsEntidadVentaHib getCotizacionById(Integer id);
+    public List<ClsEntidadVentaHib> searchVentas(Date start, Date finish);
+    public List<ClsEntidadVentaHib> searchCotizaciones(Date start, Date finish);
     public void generarOrdenDeCompra(int id);
-    public void saveVenta(ClsEntidadVentaHib venta);
+    public void saveOrUpdateVenta(ClsEntidadVentaHib venta);
 }

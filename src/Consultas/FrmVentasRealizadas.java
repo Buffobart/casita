@@ -7,16 +7,23 @@ package Consultas;
 import Conexion.ClsConexion;
 import Entidad.*;
 import Negocio.*;
+import Presentacion.FrmPrincipal;
+import Presentacion.FrmVenta;
+import daos.VentaDao;
 import daos.impl.VentaDaoImpl;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Vector;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -43,6 +50,9 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
     boolean valor=true;
     int n=0;
     
+    VentaDao ventasDao = new VentaDaoImpl();
+    List<ClsEntidadVentaHib> ventas;
+    
     public FrmVentasRealizadas() {
         initComponents();
         lblIdVenta.setVisible(false);
@@ -56,9 +66,9 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
         //SimpleDateFormat formato=new SimpleDateFormat(format);
         
         Calendar cal = Calendar.getInstance(); 
-        dcFechafin.setDate(cal.getTime());
+        this.dcFechafin.setDate(cal.getTime());
         cal.add(Calendar.MONTH, -1);
-        dcFechafin.setDate(cal.getTime());
+        this.dcFechaini.setDate(cal.getTime());
         
         BuscarVenta();
         CrearTabla(); 
@@ -71,7 +81,7 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
 
     void CrearTabla(){
    //--------------------PRESENTACION DE JTABLE----------------------
-      
+      /*
         TableCellRenderer render = new DefaultTableCellRenderer() { 
 
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) { 
@@ -105,14 +115,14 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
         //Agregar Render
         for (int i=0;i<tblVenta.getColumnCount();i++){
             tblVenta.getColumnModel().getColumn(i).setCellRenderer(render);
-        }
+        }*/
       
         //Activar ScrollBar
-        tblVenta.setAutoResizeMode(tblVenta.AUTO_RESIZE_OFF);
+        //tblVenta.setAutoResizeMode(tblVenta.AUTO_RESIZE_OFF);
 
         //Anchos de cada columna
-        int[] anchos = {50,160,70,120,80,40,60,60,80,80,80};
-        for(int i = 0; i < tblVenta.getColumnCount(); i++) {
+        int[] anchos = {50};
+        for(int i = 0; i < anchos.length; i++) {
             tblVenta.getColumnModel().getColumn(i).setPreferredWidth(anchos[i]);
         }
 
@@ -121,49 +131,43 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
         String titulos[]={"ID","Cliente","Fecha","Empleado","Documento","Serie","Número","Estado","Valor Venta","Descuento","Total"};
         DefaultTableModel tableModel = new DefaultTableModel(null, titulos);
         
-        
-        
-        ClsVenta venta=new ClsVenta();
-
-        fecha_ini=dcFechaini.getDate();
-        fecha_fin=dcFechafin.getDate();
-
-        try{
-            rs=venta.listarVentaPorFecha("consultar",fecha_ini,fecha_fin,"");
-            boolean encuentra=false;
-            String Datos[]=new String[11];
-            int f,i;
-            f=dtm.getRowCount();
-            if(f>0){
-                for(i=0;i<f;i++){
-                    dtm.removeRow(0);
-                }
+        if(this.radCotizaciones.isSelected()){
+            if( !this.txtIDVenta.getText().equals("") ){
+                this.ventas = new ArrayList<ClsEntidadVentaHib>();
+                this.ventas.add( ventasDao.getCotizacionById(new Integer( this.txtIDVenta.getText() )) );
+            }else{
+                this.ventas = ventasDao.searchCotizaciones(this.dcFechaini.getDate(), this.dcFechafin.getDate());
             }
-            while(rs.next()){
-                Datos[0]=(String) rs.getString(1);
-                Datos[1]=(String) rs.getString(2);
-                Datos[2]=(String) rs.getString(3);
-                Datos[3]=(String) rs.getString(4);
-                Datos[4]=(String) rs.getString(5);
-                Datos[5]=(String) rs.getString(6);
-                Datos[6]=(String) rs.getString(7);
-                Datos[7]=(String) rs.getString(8);
-                Datos[8]=(String) rs.getString(9);
-                Datos[9]=(String) rs.getString(10);
-                Datos[10]=(String) rs.getString(11);
-
-                dtm.addRow(Datos);
-                encuentra=true;
-
+        }else{
+            if( !this.txtIDVenta.getText().equals("") ){
+                this.ventas = new ArrayList<ClsEntidadVentaHib>();
+                this.ventas.add( ventasDao.getVentaById(new Integer( this.txtIDVenta.getText() )) );
+            }else{
+                this.ventas = ventasDao.searchVentas(this.dcFechaini.getDate(), this.dcFechafin.getDate());
             }
-            if(encuentra=false){
-                JOptionPane.showMessageDialog(null, "¡No se encuentra!");
-            }
-
-        }catch(Exception ex){
-            ex.printStackTrace();
         }
-        tblVenta.setModel(dtm);
+        
+        
+        for( ClsEntidadVentaHib venta : this.ventas){
+            Vector data = new Vector();
+            
+            data.add(venta.getIdVenta());
+            data.add(venta.getIdCliente().getNombre());
+            data.add(venta.getFecha());
+            data.add(venta.getIdEmpleado().getNombre());
+            data.add(venta.getIdTipoDocumento().getDescripcion());
+            data.add(venta.getSerie());
+            data.add(venta.getNumero());
+            data.add(venta.getEstado());
+            data.add(venta.getTotalVenta());
+            data.add(venta.getDescuento());
+            data.add(venta.getTotalPagar());
+            
+            tableModel.addRow(data);
+            
+        }
+        
+        this.tblVenta.setModel(tableModel);
     }
       
     void CrearTablaDetalle(){
@@ -205,11 +209,11 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
         }
       
         //Activar ScrollBar
-        tblDetalleVenta.setAutoResizeMode(tblVenta.AUTO_RESIZE_OFF);
+        //tblDetalleVenta.setAutoResizeMode(tblVenta.AUTO_RESIZE_OFF);
 
         //Anchos de cada columna
-        int[] anchos = {50,60,80,200,200,60,60,60};
-        for(int i = 0; i < tblDetalleVenta.getColumnCount(); i++) {
+        int[] anchos = {30};
+        for(int i = 0; i < anchos.length; i++) {
             tblDetalleVenta.getColumnModel().getColumn(i).setPreferredWidth(anchos[i]);
         }
         //Ocultar Columnas
@@ -303,6 +307,7 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        rbgVentaCotizacion = new javax.swing.ButtonGroup();
         jScrollPane5 = new javax.swing.JScrollPane();
         tblVenta = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
@@ -314,16 +319,19 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
         lblIdVenta = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtIDVenta = new javax.swing.JTextField();
+        radVenta = new javax.swing.JRadioButton();
+        radCotizaciones = new javax.swing.JRadioButton();
         btnVerDetalle = new javax.swing.JButton();
         lblEstado = new javax.swing.JLabel();
         jScrollPane6 = new javax.swing.JScrollPane();
         tblDetalleVenta = new javax.swing.JTable();
         jButton3 = new javax.swing.JButton();
+        btnGenerarVenta = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
-        setTitle("Informe de Ventas Realizadas");
+        setTitle("Ventas y Cotizaciones");
         setToolTipText("");
         getContentPane().setLayout(null);
 
@@ -338,6 +346,7 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblVenta.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         tblVenta.setRowHeight(22);
         tblVenta.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -354,21 +363,21 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
 
         dcFechaini.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jPanel1.add(dcFechaini);
-        dcFechaini.setBounds(130, 30, 100, 25);
+        dcFechaini.setBounds(120, 30, 100, 20);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jLabel1.setText("Fecha inicial:");
         jPanel1.add(jLabel1);
-        jLabel1.setBounds(130, 10, 80, 20);
+        jLabel1.setBounds(120, 17, 80, 13);
 
         dcFechafin.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jPanel1.add(dcFechafin);
-        dcFechafin.setBounds(240, 30, 100, 25);
+        dcFechafin.setBounds(230, 30, 100, 20);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jLabel3.setText("Fecha final:");
         jPanel1.add(jLabel3);
-        jLabel3.setBounds(240, 10, 80, 20);
+        jLabel3.setBounds(230, 17, 80, 13);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/Buscar_32.png"))); // NOI18N
         jButton1.setText("Buscar");
@@ -378,7 +387,7 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
             }
         });
         jPanel1.add(jButton1);
-        jButton1.setBounds(380, 20, 110, 50);
+        jButton1.setBounds(340, 20, 110, 50);
         jPanel1.add(lblIdVenta);
         lblIdVenta.setBounds(320, 20, 40, 20);
 
@@ -390,14 +399,35 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
             }
         });
         jPanel1.add(jButton2);
-        jButton2.setBounds(580, 20, 110, 50);
+        jButton2.setBounds(460, 20, 110, 50);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
-        jLabel2.setText("ID Venta:");
+        jLabel2.setText("ID Venta / Cotizacion:");
         jPanel1.add(jLabel2);
-        jLabel2.setBounds(10, 20, 60, 10);
-        jPanel1.add(jTextField1);
-        jTextField1.setBounds(10, 30, 100, 20);
+        jLabel2.setBounds(10, 17, 110, 10);
+        jPanel1.add(txtIDVenta);
+        txtIDVenta.setBounds(10, 30, 100, 20);
+
+        rbgVentaCotizacion.add(radVenta);
+        radVenta.setSelected(true);
+        radVenta.setText("Ventas");
+        radVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radVentaActionPerformed(evt);
+            }
+        });
+        jPanel1.add(radVenta);
+        radVenta.setBounds(10, 60, 59, 23);
+
+        rbgVentaCotizacion.add(radCotizaciones);
+        radCotizaciones.setText("Cotizaciones");
+        radCotizaciones.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radCotizacionesActionPerformed(evt);
+            }
+        });
+        jPanel1.add(radCotizaciones);
+        radCotizaciones.setBounds(80, 60, 85, 23);
 
         getContentPane().add(jPanel1);
         jPanel1.setBounds(10, 10, 730, 90);
@@ -446,24 +476,57 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
         getContentPane().add(jButton3);
         jButton3.setBounds(390, 260, 190, 40);
 
+        btnGenerarVenta.setText("Generar Venta");
+        btnGenerarVenta.setEnabled(false);
+        btnGenerarVenta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerarVentaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnGenerarVenta);
+        btnGenerarVenta.setBounds(260, 260, 110, 40);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void tblVentaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblVentaMouseClicked
-        int fila;
-        DefaultTableModel defaultTableModel = new DefaultTableModel();
-        fila = tblVenta.getSelectedRow();
-
-        if (fila == -1){
-            JOptionPane.showMessageDialog(null, "Se debe seleccionar un registro");
-        }else{
-            defaultTableModel = (DefaultTableModel)tblVenta.getModel();
-            //strCodigo =  ((String) defaultTableModel.getValueAt(fila, 0));
-            lblIdVenta.setText((String) defaultTableModel.getValueAt(fila, 0));
-
+    private void actualizarTablaDetalle(ClsEntidadVentaHib venta){
+        String titulos[]={"ID","ID Prod.","Cód Producto","Nombre","Descripción","Cantidad","Precio","Total"};
+        
+        DefaultTableModel model = new DefaultTableModel(null, titulos);
+        
+        for(ClsEntidadDetalleventaHib detalle : venta.getClsEntidadDetalleventaHibCollection() ){
+            Vector data = new Vector();
+            
+            data.add(detalle.getIdDetalleVenta());
+            data.add(detalle.getIdProducto().getIdProducto());
+            data.add(detalle.getCantidad());
+            data.add(detalle.getIdProducto().getNombre());
+            data.add(detalle.getIdProducto().getDescripcion());
+            data.add(detalle.getCantidad());
+            data.add(detalle.getPrecio());
+            data.add(detalle.getTotal());
+            
+            model.addRow(data);
+            
         }
-        BuscarVentaDetalle();
-        CrearTablaDetalle();
+        
+        this.tblDetalleVenta.setModel(model);
+        
+    }
+    
+    private void tblVentaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblVentaMouseClicked
+        int fila = tblVenta.getSelectedRow();
+
+        if (fila >= 0){
+            ClsEntidadVentaHib venta = this.ventas.get(fila);
+            actualizarTablaDetalle(venta);
+            
+            if(venta.getEstado().equals(ClsEntidadVentaHib.PRO_TIPO_COTIZACION)){
+                this.btnGenerarVenta.setEnabled(true);
+            }else{
+                this.btnGenerarVenta.setEnabled(false);
+            }
+        }
     }//GEN-LAST:event_tblVentaMouseClicked
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -484,8 +547,8 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
                 n=0;
                 btnVerDetalle.setText("Ver Detalle");
             }
-            BuscarVentaDetalle();
-            CrearTablaDetalle();
+            //BuscarVentaDetalle();
+            //CrearTablaDetalle();
         }else{
             JOptionPane.showMessageDialog(null, "¡Se debe seleccionar un registro de venta!");
         }
@@ -520,9 +583,10 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int fila = tblVenta.getSelectedRow();
         
-        if(tblVenta.getSelectedRows().length > 0 ) {
-            int id = Integer.parseInt( lblIdVenta.getText() );
+        if(fila >= 0 ) {
+            int id = this.ventas.get(fila).getIdVenta();
             new VentaDaoImpl().generarOrdenDeCompra( id );
             
         }else{
@@ -531,7 +595,35 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
         
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void radCotizacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radCotizacionesActionPerformed
+        this.BuscarVenta();
+    }//GEN-LAST:event_radCotizacionesActionPerformed
+
+    private void radVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radVentaActionPerformed
+        this.BuscarVenta();
+    }//GEN-LAST:event_radVentaActionPerformed
+
+    private void btnGenerarVentaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarVentaActionPerformed
+        
+        int fila = tblVenta.getSelectedRow();
+        
+        if(fila >= 0 ) {
+            ClsEntidadVentaHib venta = this.ventas.get(fila);
+            
+            FrmVenta frmVenta = new FrmVenta(venta);
+            FrmPrincipal.getInstance().getEscritorio().add(frmVenta);
+            frmVenta.setVisible(true);
+            
+            this.dispose();
+            
+        }else{
+            JOptionPane.showMessageDialog(null, "¡Se debe seleccionar un registro de venta!");
+        }
+        
+    }//GEN-LAST:event_btnGenerarVentaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnGenerarVenta;
     private javax.swing.JButton btnVerDetalle;
     private com.toedter.calendar.JDateChooser dcFechafin;
     private com.toedter.calendar.JDateChooser dcFechaini;
@@ -544,10 +636,13 @@ public class FrmVentasRealizadas extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblEstado;
     private javax.swing.JLabel lblIdVenta;
+    private javax.swing.JRadioButton radCotizaciones;
+    private javax.swing.JRadioButton radVenta;
+    private javax.swing.ButtonGroup rbgVentaCotizacion;
     private javax.swing.JTable tblDetalleVenta;
     private javax.swing.JTable tblVenta;
+    private javax.swing.JTextField txtIDVenta;
     // End of variables declaration//GEN-END:variables
 }

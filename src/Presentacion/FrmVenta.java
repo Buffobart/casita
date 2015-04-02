@@ -49,7 +49,8 @@ private Connection connection=new ClsConexion().getConection();
     //String Datos[]=new String[50];
 
     static int intContador;
-    public String IdEmpleado,NombreEmpleado;
+    public Integer IdEmpleado;
+    public String NombreEmpleado;
     int idventa,nidventa;
      String idventa_print;
     //-----------------------------------------------
@@ -106,10 +107,58 @@ private Connection connection=new ClsConexion().getConection();
         CrearTablaDetalleProducto();
         
         cargarCuentasBancarias();
+        
+        //this.IdEmpleado = FrmPrincipal.getInstance().getEmpleado().getIdEmpleado().toString();
+    }
+    
+    public FrmVenta(ClsEntidadVentaHib venta) {
+        this();
+        modificar();
+        this.venta = venta;
+        
+        fillFieldsWithData(venta);
+        
     }
 //-----------------------------------------------------------------------------------------------
 //--------------------------------------METODOS--------------------------------------------------
 //-----------------------------------------------------------------------------------------------
+    
+    public void fillFieldsWithData(ClsEntidadVentaHib venta){
+        
+        this.txtNombreCliente.setText( venta.getIdCliente().getNombre() );
+        this.cboTipoDocumento.setSelectedItem( venta.getIdTipoDocumento().getDescripcion() );
+        //fecha
+        this.txtSerie.setText( venta.getSerie() );
+        this.txtNumero.setText( venta.getNumero() );
+        
+        this.txtTotalPagar.setText( venta.getTotalPagar().toString() );
+        this.txtSubTotal.setText( venta.getSubTotal().toString() );
+        this.txtTotalVenta.setText( venta.getTotalVenta().toString() );
+        this.txtIGV.setText( venta.getIgv().toString() );
+        //this.CalcularIGV();
+        
+        //this.detalles = (ArrayList<ClsEntidadDetalleventaHib>) venta.getClsEntidadDetalleventaHibCollection();
+        
+        for(ClsEntidadDetalleventaHib detalle : venta.getClsEntidadDetalleventaHibCollection()){
+            
+            this.detalles.add(detalle);
+                    
+            ClsEntidadProductoHib p = detalle.getIdProducto();
+
+            agregardatos(
+                    p.getIdProducto(),
+                    p.getCodigo(),
+                    p.getNombre(),
+                    p.getDescripcion(),
+                    detalle.getCantidad().doubleValue(),
+                    p.getPrecioCosto().floatValue(),
+                    p.getPrecioVenta().floatValue(),
+                    detalle.getTotal().doubleValue());
+        }
+        
+        this.lblIdCliente.setText( venta.getIdCliente().getId().toString() );
+        
+    }
     
     private void cargarCuentasBancarias(){
         this.cuentas = cuentasDao.getAllCuentas();
@@ -1338,7 +1387,7 @@ private Connection connection=new ClsConexion().getConection();
         
         venta.setIdTipoDocumento(this.tiposDeDocumento.get( this.cboTipoDocumento.getSelectedIndex()) );
         venta.setIdCliente(new ClsEntidadClienteHib(new Integer(lblIdCliente.getText())));
-        venta.setIdEmpleado(new ClsEntidadEmpleadoHib(new Integer(IdEmpleado)));
+        venta.setIdEmpleado(new ClsEntidadEmpleadoHib(FrmPrincipal.getInstance().getEmpleado().getIdEmpleado()));
         venta.setSerie(txtSerie.getText());
         venta.setNumero(txtNumero.getText());
         venta.setFecha(txtFecha.getDate());
@@ -1346,7 +1395,7 @@ private Connection connection=new ClsConexion().getConection();
         venta.setDescuento(new BigDecimal(txtDescuento.getText()));
         venta.setSubTotal(new BigDecimal(txtSubTotal.getText()));
         venta.setIgv(new BigDecimal(txtIGV.getText()));
-        venta.setEstado(ClsEntidadVentaHib.PRO_TIPO_EMITIDO);
+        venta.setEstado(ClsEntidadVentaHib.PRO_TIPO_VENTA);
         venta.setTotalPagar(new BigDecimal(txtTotalPagar.getText()));
 
         venta.setClsEntidadDetalleventaHibCollection(this.detalles);
@@ -1358,7 +1407,7 @@ private Connection connection=new ClsConexion().getConection();
         
         inputToVO();
         //venta.setClsEntidadDetalleventaHibCollection(this.detalles);
-        this.ventaDao.saveVenta(venta);
+        this.ventaDao.saveOrUpdateVenta(venta);
         
         double total = Double.parseDouble(txtTotalVenta.getText());
         ClsEntidadCuenta cuenta = this.cuentas.get(this.cboCuentas.getSelectedIndex());
@@ -1467,7 +1516,7 @@ private Connection connection=new ClsConexion().getConection();
         inputToVO();
         venta.setEstado(ClsEntidadVentaHib.PRO_TIPO_COTIZACION);
         //venta.setClsEntidadDetalleventaHibCollection(this.detalles);
-        this.ventaDao.saveVenta(venta);
+        this.ventaDao.saveOrUpdateVenta(venta);
         
         this.generarOrdenDeCompra(venta);
         

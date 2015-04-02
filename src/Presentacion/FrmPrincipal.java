@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 import java.util.Date;
 import java.text.*;
+import javax.swing.JDesktopPane;
 import org.hibernate.Session;
 
 
@@ -78,6 +79,10 @@ public class FrmPrincipal extends javax.swing.JFrame {
    
    public String getPermisoDescuento(){
        return this.p_descuento;
+   }
+   
+   public JDesktopPane getEscritorio(){
+       return this.Escritorio;
    }
 
 void BuscarPermisos(){
@@ -507,7 +512,7 @@ void BuscarPermisos(){
         mnuInformes.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Iconos/report.png"))); // NOI18N
         mnuInformes.setText("Informes");
 
-        mVentare.setText("Ventas Realizadas");
+        mVentare.setText("Ventas y Cotizaciones");
         mVentare.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mVentareActionPerformed(evt);
@@ -963,7 +968,7 @@ void BuscarPermisos(){
         Presentacion.FrmVenta venta=new Presentacion.FrmVenta();
         Escritorio.add(venta);
         venta.show();
-        venta.IdEmpleado=lblIdEmpleado.getText();
+        //venta.IdEmpleado=lblIdEmpleado.getText();
         venta.NombreEmpleado=lblNombreEmpleado.getText();
 
     }//GEN-LAST:event_mVentaActionPerformed
@@ -1022,7 +1027,7 @@ void BuscarPermisos(){
         Presentacion.FrmVenta venta=new Presentacion.FrmVenta();
         Escritorio.add(venta);
         venta.show();
-        venta.IdEmpleado=lblIdEmpleado.getText();
+        //venta.IdEmpleado=lblIdEmpleado.getText();
         venta.NombreEmpleado=lblNombreEmpleado.getText();
     }//GEN-LAST:event_mbtnVentaActionPerformed
 

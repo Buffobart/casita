@@ -63,11 +63,11 @@ public class VentaDaoImpl implements VentaDao{
     }
 
     @Override
-    public void saveVenta(ClsEntidadVentaHib venta) {
+    public void saveOrUpdateVenta(ClsEntidadVentaHib venta) {
         Session session = HibernateUtil.getInstance().getSession();
         session.beginTransaction();
 
-        session.save(venta);
+        session.saveOrUpdate(venta);
         
         session.getTransaction().commit();
         session.close();
@@ -103,12 +103,30 @@ public class VentaDaoImpl implements VentaDao{
     }
 
     @Override
-    public ClsEntidadVentaHib getById(Integer id) {
+    public List<ClsEntidadVentaHib> searchCotizaciones(Date start, Date finish) {
         Session session = HibernateUtil.getInstance().getSession();
         session.beginTransaction();
         
-        Query query = session.createQuery( "FROM ClsEntidadVentaHib WHERE IdVenta=:id");
+        Query query = session.createQuery( "FROM ClsEntidadVentaHib WHERE Estado=:estadoCotizacion AND Fecha>=:fechaIni AND Fecha<=:fechaFin");
+        query.setParameter("estadoCotizacion", ClsEntidadVentaHib.PRO_TIPO_COTIZACION);
+        query.setParameter("fechaIni", start);
+        query.setParameter("fechaFin", finish);
+        List<ClsEntidadVentaHib> ventas = query.list();
+        
+        session.close();
+        
+        return ventas;
+    }
+
+    @Override
+    public ClsEntidadVentaHib getVentaById(Integer id) {
+        Session session = HibernateUtil.getInstance().getSession();
+        session.beginTransaction();
+        
+        Query query = session.createQuery( "FROM ClsEntidadVentaHib WHERE IdVenta=:id AND (Estado=:estadoVenta OR Estado=:estadoEmitido)");
         query.setParameter("id", id);
+        query.setParameter("estadoVenta", ClsEntidadVentaHib.PRO_TIPO_VENTA);
+        query.setParameter("estadoEmitido", ClsEntidadVentaHib.PRO_TIPO_EMITIDO);
         List<ClsEntidadVentaHib> ventas = query.list();
         
         session.close();
@@ -117,8 +135,35 @@ public class VentaDaoImpl implements VentaDao{
     }
 
     @Override
-    public List<ClsEntidadVentaHib> searchCotizaciones(Integer id, Date start, Date finish) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public ClsEntidadVentaHib getCotizacionById(Integer id) {
+        Session session = HibernateUtil.getInstance().getSession();
+        session.beginTransaction();
+        
+        Query query = session.createQuery( "FROM ClsEntidadVentaHib WHERE IdVenta=:id AND Estado=:estadoCotizacion");
+        query.setParameter("id", id);
+        query.setParameter("estadoCotizacion", ClsEntidadVentaHib.PRO_TIPO_COTIZACION);
+        List<ClsEntidadVentaHib> ventas = query.list();
+        
+        session.close();
+        
+        return ventas.get(0);
+    }
+
+    @Override
+    public List<ClsEntidadVentaHib> searchVentas(Date start, Date finish) {
+        Session session = HibernateUtil.getInstance().getSession();
+        session.beginTransaction();
+        
+        Query query = session.createQuery( "FROM ClsEntidadVentaHib WHERE (Estado=:estadoVenta OR Estado=:estadoEmitido) AND Fecha>=:fechaIni AND Fecha<=:fechaFin");
+        query.setParameter("estadoVenta", ClsEntidadVentaHib.PRO_TIPO_VENTA);
+        query.setParameter("estadoEmitido", ClsEntidadVentaHib.PRO_TIPO_EMITIDO);
+        query.setParameter("fechaIni", start);
+        query.setParameter("fechaFin", finish);
+        List<ClsEntidadVentaHib> ventas = query.list();
+        
+        session.close();
+        
+        return ventas;
     }
     
 }
