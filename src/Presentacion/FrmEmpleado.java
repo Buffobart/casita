@@ -537,9 +537,6 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 txtNombreKeyReleased(evt);
             }
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtNombreKeyTyped(evt);
-            }
         });
         jPanel1.add(txtNombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 60, 150, -1));
 
@@ -770,7 +767,12 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
         if(validardatos()==true){
             
             ClsEntidadEmpleadoHib empleado = new ClsEntidadEmpleadoHib();
-            empleado.setIdEmpleado( new Integer(this.txtCodigo.getText()) );
+            
+            String empleado_id = this.txtCodigo.getText().trim();
+            if( !empleado_id.equals("") ){
+                empleado.setIdEmpleado( new Integer(this.txtCodigo.getText()) );
+            }
+            
             empleado.setNombre(this.txtNombre.getText());
             empleado.setApellido(this.txtApellido.getText());
             if (this.rbtnMasculino.isSelected()){
@@ -855,12 +857,6 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
 
         mirar();
     }//GEN-LAST:event_tblEmpleadoMouseClicked
-
-    private void txtNombreKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyTyped
-        char car = evt.getKeyChar();
-        if((car<'a' || car>'z') && (car<'A' || car>'Z')) evt.consume();
-        txtNombre.setBackground(Color.WHITE);
-    }//GEN-LAST:event_txtNombreKeyTyped
 
     private void txtNombreKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNombreKeyReleased
         int keyCode = evt.getKeyCode();
