@@ -5,6 +5,7 @@ import Conexion.HibernateUtil;
 import Negocio.*;
 import Entidad.*;
 import daos.impl.UsuarioDaoImpl;
+import java.awt.Component;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
@@ -193,6 +194,7 @@ public class FrmLogin extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sistema de Ventas");
+        setFocusTraversalPolicyProvider(true);
         getContentPane().setLayout(null);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
@@ -248,6 +250,11 @@ public class FrmLogin extends javax.swing.JFrame {
         jLabel5.setBounds(10, 50, 134, 170);
 
         txtContraseña.setNextFocusableComponent(btnIniciar);
+        txtContraseña.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtContraseñaActionPerformed(evt);
+            }
+        });
         getContentPane().add(txtContraseña);
         txtContraseña.setBounds(390, 90, 160, 30);
         getContentPane().add(lblIntentos);
@@ -360,58 +367,7 @@ public class FrmLogin extends javax.swing.JFrame {
     }//GEN-LAST:event_btnCancelarActionPerformed
 
     private void btnIniciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIniciarActionPerformed
-        String algorithm="SHA-512";  
-        String resultado1,resultado2;
-        String usuario=null;
-        String contraseña=null;
-        String descripcion=null;
-        int sen=1;int tu=1;
-        
-        usuario=txtUsuario.getText();
-        contraseña=txtContraseña.getText();
-        descripcion= String.valueOf(cboCargo.getSelectedItem());
-        resultado1=getStringMessageDigest(contraseña,algorithm);   
-       
-        boolean encuentra=false;
-        
-        if(usuario.length()==0 ||contraseña.length()==0) {
-            JOptionPane.showMessageDialog(this, "!Ingrese Usuario y/o Constraseña!");
-            txtUsuario.setText("");
-            txtContraseña.setText("");
-            txtUsuario.requestFocus();
-            intentos=intentos+1;
-            lblIntentos.setText(Integer.toString(intentos));
-
-        }
-        else 
-        {
-            try{
-               UsuarioDaoImpl usuarioDao = new UsuarioDaoImpl();
-               ClsEntidadEmpleadoHib empleado = usuarioDao.login(usuario, resultado1);
-                if( empleado != null ){
-                    FrmPrincipal mdi=new FrmPrincipal();
-                    mdi.setEmpleado(empleado);
-                    mdi.setVisible(true);
-                    
-                    this.dispose();                    
-                    mdi.strUsuario=empleado.getUsuario();
-                    mdi.strIdEmpleado=empleado.getIdEmpleado().toString();
-                    mdi.strNombreEmpleado=empleado.getNombre() + " " + empleado.getApellido();
-                    mdi.strTipo=empleado.getIdTipoUsuario().getDescripcion();
-                    mdi.intEstado=1; 
-                    
-                    
-                }
-
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this,ex.getMessage());
-                ex.printStackTrace();
-            }
-        }
-        
-        if(intentos==3){
-            this.dispose();
-        }
+        this.logIn();
     }//GEN-LAST:event_btnIniciarActionPerformed
 
     private void btnD9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnD9ActionPerformed
@@ -468,6 +424,67 @@ public class FrmLogin extends javax.swing.JFrame {
     private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
        txtContraseña.setText("");
     }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void txtContraseñaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtContraseñaActionPerformed
+        // TODO add your handling code here:
+        System.out.println("KEY");
+        this.logIn();
+    }//GEN-LAST:event_txtContraseñaActionPerformed
+    
+    private void logIn(){
+        String algorithm="SHA-512";  
+        String resultado1;//,resultado2;
+        String usuario=null;
+        String contraseña=null;
+        String descripcion=null;
+        int sen=1;int tu=1;
+        
+        usuario=txtUsuario.getText();
+        contraseña=txtContraseña.getText();
+        descripcion= String.valueOf(cboCargo.getSelectedItem());
+        resultado1=getStringMessageDigest(contraseña,algorithm);   
+       
+        boolean encuentra=false;
+        
+        if(usuario.length()==0 ||contraseña.length()==0) {
+            JOptionPane.showMessageDialog(this, "!Ingrese Usuario y/o Constraseña!");
+            txtUsuario.setText("");
+            txtContraseña.setText("");
+            txtUsuario.requestFocus();
+            intentos=intentos+1;
+            lblIntentos.setText(Integer.toString(intentos));
+
+        }
+        else 
+        {
+            try{
+               UsuarioDaoImpl usuarioDao = new UsuarioDaoImpl();
+               ClsEntidadEmpleadoHib empleado = usuarioDao.login(usuario, resultado1);
+                if( empleado != null ){
+                    FrmPrincipal mdi=new FrmPrincipal();
+                    mdi.setEmpleado(empleado);
+                    mdi.setVisible(true);
+                    
+                    this.dispose();                    
+                    mdi.strUsuario=empleado.getUsuario();
+                    mdi.strIdEmpleado=empleado.getIdEmpleado().toString();
+                    mdi.strNombreEmpleado=empleado.getNombre() + " " + empleado.getApellido();
+                    mdi.strTipo=empleado.getIdTipoUsuario().getDescripcion();
+                    mdi.intEstado=1; 
+                    
+                    
+                }
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this,ex.getMessage());
+                ex.printStackTrace();
+            }
+        }
+        
+        if(intentos==3){
+            this.dispose();
+        }
+    }
     
     /**
      * @param args the command line arguments

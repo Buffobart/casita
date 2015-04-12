@@ -551,12 +551,6 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
 
         jLabel6.setText("Apellidos:");
         jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 90, 60, 20));
-
-        txtApellido.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtApellidoKeyTyped(evt);
-            }
-        });
         jPanel1.add(txtApellido, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 90, 150, -1));
 
         jLabel7.setText("Sexo:");
@@ -597,12 +591,6 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
         jPanel1.add(txtTelefono, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 230, 150, -1));
         jPanel1.add(txtCelular, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 260, 150, -1));
         jPanel1.add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 60, 180, -1));
-
-        txtDni.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtDniKeyTyped(evt);
-            }
-        });
         jPanel1.add(txtDni, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 290, 150, -1));
 
         jLabel15.setText("Sueldo:");
@@ -638,12 +626,6 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
 
         cboTipoUsuario.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jPanel1.add(cboTipoUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 290, 140, 20));
-
-        txtContraseña.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtContraseñaKeyTyped(evt);
-            }
-        });
         jPanel1.add(txtContraseña, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 260, 140, -1));
 
         jLabel21.setText("<html>Los campos marcado con un asterísco (<a style=\"color:red\">*</a>) son obligatorios</html>");
@@ -863,28 +845,6 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
         if (keyCode==KeyEvent.VK_ENTER) txtApellido.requestFocus();
     }//GEN-LAST:event_txtNombreKeyReleased
 
-    private void txtApellidoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtApellidoKeyTyped
-        char car = evt.getKeyChar();
-        if((car<'a' || car>'z') && (car<'A' || car>'Z')) evt.consume();
-        txtApellido.setBackground(Color.WHITE);
-    }//GEN-LAST:event_txtApellidoKeyTyped
-
-    private void txtDniKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDniKeyTyped
-        char car = evt.getKeyChar();
-        if((car<'0' || car>'9')) evt.consume();
-        //----------------Poner limite de caracteres--------------------
-        int i = txtDni.getText().length();
-        if(txtDni.getText().trim().length()<8){
-
-        }else{
-            i=10;
-            String com=txtDni.getText().substring(0, 7);
-            txtDni.setText("");
-            txtDni.setText(com);
-        }
-        txtDni.setBackground(Color.WHITE);
-    }//GEN-LAST:event_txtDniKeyTyped
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         Map p=new HashMap();
         p.put("busqueda",txtBusqueda.getText());
@@ -907,11 +867,6 @@ public class FrmEmpleado extends javax.swing.JInternalFrame {
             Logger.getLogger(FrmEmpleado.class.getName()).log(Level.SEVERE, null, ex);
         }        // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void txtContraseñaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtContraseñaKeyTyped
-        char car = evt.getKeyChar();
-        if((car<'0' || car>'9')) evt.consume();
-    }//GEN-LAST:event_txtContraseñaKeyTyped
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
         // TODO add your handling code here:
