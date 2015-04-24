@@ -5,10 +5,13 @@
  */
 package Entidad;
 
+import Presentacion.FrmPrincipal;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -32,7 +35,7 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Alan
  */
-@Entity
+@Entity 
 @Table(name = "venta")
 @XmlRootElement
 @NamedQueries({
@@ -47,7 +50,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ClsEntidadVentaHib.findByIgv", query = "SELECT c FROM ClsEntidadVentaHib c WHERE c.igv = :igv"),
     @NamedQuery(name = "ClsEntidadVentaHib.findByTotalPagar", query = "SELECT c FROM ClsEntidadVentaHib c WHERE c.totalPagar = :totalPagar"),
     @NamedQuery(name = "ClsEntidadVentaHib.findByEstado", query = "SELECT c FROM ClsEntidadVentaHib c WHERE c.estado = :estado")})
-public class ClsEntidadVentaHib implements Serializable, IntEntidadTransaccionImprimible {
+public class ClsEntidadVentaHib implements Serializable, IntEntidadTransaccionImprimible, IntOperacion {
+    @JoinColumn(name = "cuenta", referencedColumnName = "IdCuenta")
+    @ManyToOne
+    private ClsEntidadCuenta cuenta;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -289,5 +295,30 @@ public class ClsEntidadVentaHib implements Serializable, IntEntidadTransaccionIm
         this.tipoTransaccion = tipoTransaccion;
     }
     */
+
+    @Override
+    public List<ClsEntidadOperacionHib> getOperaciones(){
+        ClsEntidadOperacionHib operacion = new ClsEntidadOperacionHib();
+        operacion.setTipo(ClsEntidadOperacionHib.TIPO_VENTA);
+        operacion.setCuenta(this.cuenta);
+        operacion.setCantidad(this.totalVenta);
+        operacion.setMontoFinal(this.cuenta.getBalance());
+        operacion.setMontoInicial(this.cuenta.getBalance().subtract(this.getTotal()));
+        operacion.setUsuario(new ClsEntidadEmpleadoHib(Integer.valueOf(FrmPrincipal.getInstance().strIdEmpleado)));
+        operacion.setHora(new Date());
+        
+        ArrayList operaciones = new ArrayList();
+        operaciones.add(operacion);
+        
+        return operaciones;
+    }
+
+    public ClsEntidadCuenta getCuenta() {
+        return cuenta;
+    }
+
+    public void setCuenta(ClsEntidadCuenta cuenta) {
+        this.cuenta = cuenta;
+    }
     
 }

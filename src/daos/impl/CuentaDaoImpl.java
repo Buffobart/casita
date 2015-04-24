@@ -29,5 +29,45 @@ public class CuentaDaoImpl implements CuentaDao{
         
         return cuentas;
     }
+
+    @Override
+    public void saveCuenta(ClsEntidadCuenta cuenta) {
+        
+        Session session = null;
+        
+        try{
+            session = HibernateUtil.getInstance().getSession();
+            session.beginTransaction();
+
+            //List<ClsEntidadCuenta> cuentas = session.createQuery("FROM ClsEntidadCuenta").list();
+            session.saveOrUpdate(cuenta);
+            session.getTransaction().commit();
+        }finally{
+            if(session != null){
+                session.close();
+            }
+        }
+    }
+
+    @Override
+    public void saveCuentas(List<ClsEntidadCuenta> cuentas) {
+        Session session = null;
+        
+        try{
+            session = HibernateUtil.getInstance().getSession();
+            session.beginTransaction();
+
+            for(ClsEntidadCuenta cuenta : cuentas){
+                session.saveOrUpdate(cuenta);
+            }
+            
+            session.getTransaction().commit();
+            
+        }finally{
+            if(session != null){
+                session.close();
+            }
+        }
+    }
     
 }

@@ -1397,6 +1397,7 @@ private Connection connection=new ClsConexion().getConection();
         venta.setIgv(new BigDecimal(txtIGV.getText()));
         venta.setEstado(ClsEntidadVentaHib.PRO_TIPO_VENTA);
         venta.setTotalPagar(new BigDecimal(txtTotalPagar.getText()));
+        venta.setCuenta(this.cuentas.get(this.cboCuentas.getSelectedIndex()));
 
         venta.setClsEntidadDetalleventaHibCollection(this.detalles);
         
@@ -1409,6 +1410,7 @@ private Connection connection=new ClsConexion().getConection();
         //venta.setClsEntidadDetalleventaHibCollection(this.detalles);
         this.ventaDao.saveOrUpdateVenta(venta);
         
+        /*
         double total = Double.parseDouble(txtTotalVenta.getText());
         ClsEntidadCuenta cuenta = this.cuentas.get(this.cboCuentas.getSelectedIndex());
 
@@ -1418,8 +1420,10 @@ private Connection connection=new ClsConexion().getConection();
         operacion.setCantidad(BigDecimal.valueOf(total));
         operacion.setUsuario(new ClsEntidadEmpleadoHib(Integer.valueOf(FrmPrincipal.getInstance().strIdEmpleado)));
         operacion.setHora(new Date());
+        */
 
-        operacionDao.addOperacion(operacion);
+        /** Save the log(operation) */
+        operacionDao.addOperacion(venta);
 
         if(this.chkOrdenDeCompra.isSelected()){
             generarOrdenDeCompra(venta);

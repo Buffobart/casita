@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  * @author Alan
  */
-@Entity
+@Entity(name = "demo")
 @Table(name = "cliente")
 @XmlRootElement
 @NamedQueries({

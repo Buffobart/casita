@@ -1052,17 +1052,17 @@ void CalcularTotal(){
         if (result == JOptionPane.YES_OPTION) {
             if(accion.equals("Nuevo")){
                 ClsCompra compras=new ClsCompra();
-                ClsEntidadCompra venta=new ClsEntidadCompra();
-                venta.setStrIdTipoDocumento(id[cboTipoDocumento.getSelectedIndex()]);
-                venta.setStrIdProveedor(lblIdProveedor.getText());
-                venta.setStrIdEmpleado(IdEmpleado);
-                venta.setStrNumeroCompra(txtNumero.getText());
-                venta.setStrFechaCompra(txtFecha.getDate());
-                venta.setStrSubTotalCompra(txtSubTotal.getText());
-                venta.setStrIgvCompra(txtIGV.getText());
-                venta.setStrTotalCompra(txtTotalCompra.getText());
-                venta.setStrEstadoCompra("NORMAL");
-                compras.agregarCompra(venta);
+                ClsEntidadCompra compra=new ClsEntidadCompra();
+                compra.setStrIdTipoDocumento(id[cboTipoDocumento.getSelectedIndex()]);
+                compra.setStrIdProveedor(lblIdProveedor.getText());
+                compra.setStrIdEmpleado(IdEmpleado);
+                compra.setStrNumeroCompra(txtNumero.getText());
+                compra.setStrFechaCompra(txtFecha.getDate());
+                compra.setStrSubTotalCompra(txtSubTotal.getText());
+                compra.setStrIgvCompra(txtIGV.getText());
+                compra.setStrTotalCompra(txtTotalCompra.getText());
+                compra.setStrEstadoCompra("NORMAL");
+                compras.agregarCompra(compra);
                 guardarDetalle();
                 
                 if(this.chkOrdenCompra.isSelected()){
@@ -1076,13 +1076,15 @@ void CalcularTotal(){
                 //actualizar la cuenta bancaria, descontar el total de esta compra
                 double total = Double.parseDouble(txtTotalCompra.getText());
                 ClsEntidadCuenta cuenta = this.cuentas.get( this.cboCuentas.getSelectedIndex() );
-                //cuenta.setBalance( cuenta.getBalance().subtract(BigDecimal.valueOf(total)) );
+                cuenta.setBalance( cuenta.getBalance().subtract(BigDecimal.valueOf(total)) );
                 //actualizaCuentaBancaria(cuenta);
                 
                 ClsEntidadOperacionHib operacion = new ClsEntidadOperacionHib();
                 operacion.setTipo("COMPRA");
                 operacion.setCuenta(cuenta);
                 operacion.setCantidad(BigDecimal.valueOf(total).negate());
+                operacion.setMontoFinal(cuenta.getBalance());
+                operacion.setMontoInicial(cuenta.getBalance().add(BigDecimal.valueOf(total)));
                 operacion.setUsuario(new ClsEntidadEmpleadoHib(Integer.valueOf(FrmPrincipal.getInstance().strIdEmpleado)));
                 operacion.setHora(new Date());
                 

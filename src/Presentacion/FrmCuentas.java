@@ -78,6 +78,7 @@ public class FrmCuentas extends javax.swing.JInternalFrame {
 
         jButton3 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
+        jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
@@ -99,6 +100,15 @@ public class FrmCuentas extends javax.swing.JInternalFrame {
         setPreferredSize(new java.awt.Dimension(730, 440));
 
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton4.setText("Hacer trenferencia");
+        jButton4.setPreferredSize(new java.awt.Dimension(123, 40));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton4);
 
         jButton1.setText("Agregar");
         jButton1.setPreferredSize(new java.awt.Dimension(80, 40));
@@ -191,7 +201,7 @@ public class FrmCuentas extends javax.swing.JInternalFrame {
                 operacion.setUsuario(new ClsEntidadEmpleadoHib(new Integer(FrmPrincipal.getInstance().strIdEmpleado)));
                 operacion.setHora(new Date());
                 
-                this.operacionDao.addOperacionAsIs(operacion);
+                this.operacionDao.addOperacion(operacion);
             }
             //JOptionPane.showMessageDialog(null, "La Cuenta se ah eliminado de la base de datos.");
         }
@@ -214,11 +224,16 @@ public class FrmCuentas extends javax.swing.JInternalFrame {
         fac.show();
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton4ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

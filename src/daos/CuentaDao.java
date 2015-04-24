@@ -15,5 +15,7 @@ import java.util.List;
 public interface CuentaDao {
     
     public List<ClsEntidadCuenta> getAllCuentas();
+    public void saveCuenta(ClsEntidadCuenta cuenta);
+    public void saveCuentas(List<ClsEntidadCuenta> cuentas);
     
 }

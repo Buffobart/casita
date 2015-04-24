@@ -52,11 +52,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ClsEntidadEmpleadoHib.findByEstado", query = "SELECT c FROM ClsEntidadEmpleadoHib c WHERE c.estado = :estado"),
     @NamedQuery(name = "ClsEntidadEmpleadoHib.findByUsuario", query = "SELECT c FROM ClsEntidadEmpleadoHib c WHERE c.usuario = :usuario")})
 public class ClsEntidadEmpleadoHib implements Serializable {
-    @JoinColumn(name = "cuenta", referencedColumnName = "IdCuenta")
-    @ManyToOne
-    private ClsEntidadCuenta cuenta;
-    @OneToMany(mappedBy = "usuario")
-    private Collection<ClsEntidadOperacionHib> clsEntidadOperacionHibCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmpleado")
     private Collection<ClsEntidadCompraHib> clsEntidadCompraHibCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmpleado")
@@ -105,6 +100,9 @@ public class ClsEntidadEmpleadoHib implements Serializable {
     @Lob
     @Column(name = "Contrasena")
     private String contrasena;
+    @JoinColumn(name = "cuenta", referencedColumnName = "IdCuenta")
+    @ManyToOne
+    private ClsEntidadCuenta cuenta;
     @JoinColumn(name = "IdTipoUsuario", referencedColumnName = "IdTipoUsuario")
     @ManyToOne(optional = false)
     private ClsEntidadTipousuarioHib idTipoUsuario;
@@ -246,6 +244,14 @@ public class ClsEntidadEmpleadoHib implements Serializable {
         this.contrasena = contrasena;
     }
 
+    public ClsEntidadCuenta getCuenta() {
+        return cuenta;
+    }
+
+    public void setCuenta(ClsEntidadCuenta cuenta) {
+        this.cuenta = cuenta;
+    }
+
     public ClsEntidadTipousuarioHib getIdTipoUsuario() {
         return idTipoUsuario;
     }
@@ -280,15 +286,6 @@ public class ClsEntidadEmpleadoHib implements Serializable {
     }
 
     @XmlTransient
-    public Collection<ClsEntidadVentaHib> getClsEntidadVentaHibCollection() {
-        return clsEntidadVentaHibCollection;
-    }
-
-    public void setClsEntidadVentaHibCollection(Collection<ClsEntidadVentaHib> clsEntidadVentaHibCollection) {
-        this.clsEntidadVentaHibCollection = clsEntidadVentaHibCollection;
-    }
-
-    @XmlTransient
     public Collection<ClsEntidadCompraHib> getClsEntidadCompraHibCollection() {
         return clsEntidadCompraHibCollection;
     }
@@ -298,20 +295,12 @@ public class ClsEntidadEmpleadoHib implements Serializable {
     }
 
     @XmlTransient
-    public Collection<ClsEntidadOperacionHib> getClsEntidadOperacionHibCollection() {
-        return clsEntidadOperacionHibCollection;
+    public Collection<ClsEntidadVentaHib> getClsEntidadVentaHibCollection() {
+        return clsEntidadVentaHibCollection;
     }
 
-    public void setClsEntidadOperacionHibCollection(Collection<ClsEntidadOperacionHib> clsEntidadOperacionHibCollection) {
-        this.clsEntidadOperacionHibCollection = clsEntidadOperacionHibCollection;
-    }
-
-    public ClsEntidadCuenta getCuenta() {
-        return cuenta;
-    }
-
-    public void setCuenta(ClsEntidadCuenta cuenta) {
-        this.cuenta = cuenta;
+    public void setClsEntidadVentaHibCollection(Collection<ClsEntidadVentaHib> clsEntidadVentaHibCollection) {
+        this.clsEntidadVentaHibCollection = clsEntidadVentaHibCollection;
     }
     
 }

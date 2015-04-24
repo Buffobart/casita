@@ -17,6 +17,10 @@
     <class>Entidad.ClsEntidadMonedaHib</class>
     <class>Entidad.ClsEntidadOperacionHib</class>
     <class>Entidad.ClsEntidadProveedorContactoHib</class>
+    <class>Entidad.ClsTransferenciaHib</class>
+    <class>Entidad.ClsGastosVariosHib</class>
+    <class>Entidad.ClsTransferenciaHib_1</class>
+    <class>Entidad.ClsGastosVariosHib_1</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/db_casita?zeroDateTimeBehavior=convertToNull"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

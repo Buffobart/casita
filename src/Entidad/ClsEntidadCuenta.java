@@ -15,8 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -37,24 +35,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ClsEntidadCuenta.findByNombre", query = "SELECT c FROM ClsEntidadCuenta c WHERE c.nombre = :nombre"),
     @NamedQuery(name = "ClsEntidadCuenta.findByCuentaDefault", query = "SELECT c FROM ClsEntidadCuenta c WHERE c.cuentaDefault = :cuentaDefault"),
     @NamedQuery(name = "ClsEntidadCuenta.findByBalance", query = "SELECT c FROM ClsEntidadCuenta c WHERE c.balance = :balance")})
-
-@NamedNativeQueries({
-	@NamedNativeQuery(
-	name = "callUpdateCuenta",
-	query = "CALL SP_U_Cuenta(:idCuenta, :nombre, :descripcion, :cuentaDefault, :balance)",
-	resultClass = ClsEntidadCuenta.class
-	),
-        @NamedNativeQuery(
-	name = "callInsertCuenta",
-	query = "CALL SP_I_Cuenta(:idCuenta, :nombre, :descripcion, :cuentaDefault, :balance)",
-	resultClass = ClsEntidadCuenta.class
-	)
-})
 public class ClsEntidadCuenta implements Serializable {
     @OneToMany(mappedBy = "cuenta")
-    private Collection<ClsEntidadEmpleadoHib> clsEntidadEmpleadoHibCollection;
+    private Collection<ClsEntidadCompraHib> clsEntidadCompraHibCollection;
     @OneToMany(mappedBy = "cuenta")
-    private Collection<ClsEntidadOperacionHib> clsEntidadOperacionHibCollection;
+    private Collection<ClsEntidadVentaHib> clsEntidadVentaHibCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,6 +57,14 @@ public class ClsEntidadCuenta implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "Balance")
     private BigDecimal balance;
+    @OneToMany(mappedBy = "cuenta")
+    private Collection<ClsGastosVariosHib> clsGastosVariosHibCollection;
+    @OneToMany(mappedBy = "cuentaOrigen")
+    private Collection<ClsTransferenciaHib> clsTransferenciaHibCollection;
+    @OneToMany(mappedBy = "cuentaDestino")
+    private Collection<ClsTransferenciaHib> clsTransferenciaHibCollection1;
+    @OneToMany(mappedBy = "cuenta")
+    private Collection<ClsEntidadEmpleadoHib> clsEntidadEmpleadoHibCollection;
 
     public ClsEntidadCuenta() {
     }
@@ -125,6 +118,42 @@ public class ClsEntidadCuenta implements Serializable {
         this.balance = balance;
     }
 
+    @XmlTransient
+    public Collection<ClsGastosVariosHib> getClsGastosVariosHibCollection() {
+        return clsGastosVariosHibCollection;
+    }
+
+    public void setClsGastosVariosHibCollection(Collection<ClsGastosVariosHib> clsGastosVariosHibCollection) {
+        this.clsGastosVariosHibCollection = clsGastosVariosHibCollection;
+    }
+
+    @XmlTransient
+    public Collection<ClsTransferenciaHib> getClsTransferenciaHibCollection() {
+        return clsTransferenciaHibCollection;
+    }
+
+    public void setClsTransferenciaHibCollection(Collection<ClsTransferenciaHib> clsTransferenciaHibCollection) {
+        this.clsTransferenciaHibCollection = clsTransferenciaHibCollection;
+    }
+
+    @XmlTransient
+    public Collection<ClsTransferenciaHib> getClsTransferenciaHibCollection1() {
+        return clsTransferenciaHibCollection1;
+    }
+
+    public void setClsTransferenciaHibCollection1(Collection<ClsTransferenciaHib> clsTransferenciaHibCollection1) {
+        this.clsTransferenciaHibCollection1 = clsTransferenciaHibCollection1;
+    }
+
+    @XmlTransient
+    public Collection<ClsEntidadEmpleadoHib> getClsEntidadEmpleadoHibCollection() {
+        return clsEntidadEmpleadoHibCollection;
+    }
+
+    public void setClsEntidadEmpleadoHibCollection(Collection<ClsEntidadEmpleadoHib> clsEntidadEmpleadoHibCollection) {
+        this.clsEntidadEmpleadoHibCollection = clsEntidadEmpleadoHibCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -147,25 +176,25 @@ public class ClsEntidadCuenta implements Serializable {
 
     @Override
     public String toString() {
-        return "Entidad.ClsCuenta[ idCuenta=" + idCuenta + " ]";
+        return "Entidad.ClsEntidadCuenta[ idCuenta=" + idCuenta + " ]";
     }
 
     @XmlTransient
-    public Collection<ClsEntidadOperacionHib> getClsEntidadOperacionHibCollection() {
-        return clsEntidadOperacionHibCollection;
+    public Collection<ClsEntidadCompraHib> getClsEntidadCompraHibCollection() {
+        return clsEntidadCompraHibCollection;
     }
 
-    public void setClsEntidadOperacionHibCollection(Collection<ClsEntidadOperacionHib> clsEntidadOperacionHibCollection) {
-        this.clsEntidadOperacionHibCollection = clsEntidadOperacionHibCollection;
+    public void setClsEntidadCompraHibCollection(Collection<ClsEntidadCompraHib> clsEntidadCompraHibCollection) {
+        this.clsEntidadCompraHibCollection = clsEntidadCompraHibCollection;
     }
 
     @XmlTransient
-    public Collection<ClsEntidadEmpleadoHib> getClsEntidadEmpleadoHibCollection() {
-        return clsEntidadEmpleadoHibCollection;
+    public Collection<ClsEntidadVentaHib> getClsEntidadVentaHibCollection() {
+        return clsEntidadVentaHibCollection;
     }
 
-    public void setClsEntidadEmpleadoHibCollection(Collection<ClsEntidadEmpleadoHib> clsEntidadEmpleadoHibCollection) {
-        this.clsEntidadEmpleadoHibCollection = clsEntidadEmpleadoHibCollection;
+    public void setClsEntidadVentaHibCollection(Collection<ClsEntidadVentaHib> clsEntidadVentaHibCollection) {
+        this.clsEntidadVentaHibCollection = clsEntidadVentaHibCollection;
     }
     
 }

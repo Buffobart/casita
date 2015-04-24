@@ -39,6 +39,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ClsEntidadOperacionHib.findByMontoFinal", query = "SELECT c FROM ClsEntidadOperacionHib c WHERE c.montoFinal = :montoFinal"),
     @NamedQuery(name = "ClsEntidadOperacionHib.findByHora", query = "SELECT c FROM ClsEntidadOperacionHib c WHERE c.hora = :hora")})
 public class ClsEntidadOperacionHib implements Serializable {
+    
+    public static final String TIPO_VENTA = "VENTA";
+    public static final String TIPO_ACTUALIZCION = "ACTUALIZACION";
+    public static final String TIPO_COMPRA = "COMPRA";
+    public static final String TIPO_TRANS_OUT = "TRANSFERENCIA RETIRO";
+    public static final String TIPO_TRANS_IN = "TRANSFERENCIA DEPOSITO";
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -8,6 +8,7 @@ package daos.impl;
 import Conexion.HibernateUtil;
 import Entidad.ClsEntidadCuenta;
 import Entidad.ClsEntidadOperacionHib;
+import Entidad.IntOperacion;
 import daos.OperacionDao;
 import java.util.Date;
 import java.util.List;
@@ -21,20 +22,16 @@ import org.hibernate.Session;
 public class OperacionDaoImpl implements OperacionDao{
 
     @Override
-    public void addOperacion(ClsEntidadOperacionHib operacion) {
+    public void addOperacion(IntOperacion operacion) {
         
         Session session = HibernateUtil.getInstance().getSession();
         session.beginTransaction();
         
-        Query query = session.createQuery("FROM ClsEntidadCuenta WHERE IdCuenta=:idcuenta");
-        query.setParameter("idcuenta", operacion.getCuenta().getIdCuenta().toString());
+        List<ClsEntidadOperacionHib> operaciones = operacion.getOperaciones();
         
-        ClsEntidadCuenta cuenta = (ClsEntidadCuenta)query.list().get(0);
-        
-        operacion.setMontoInicial(cuenta.getBalance());
-        operacion.setMontoFinal(cuenta.getBalance().add(operacion.getCantidad()));
-        
-        session.save(operacion);
+        for(ClsEntidadOperacionHib op : operaciones){
+            session.save(op);
+        }
         
         session.getTransaction().commit();
         session.close();
@@ -85,7 +82,7 @@ public class OperacionDaoImpl implements OperacionDao{
     }
 
     @Override
-    public void addOperacionAsIs(ClsEntidadOperacionHib operacion) {
+    public void addOperacion(ClsEntidadOperacionHib operacion) {
         Session session = HibernateUtil.getInstance().getSession();
         session.beginTransaction();
         

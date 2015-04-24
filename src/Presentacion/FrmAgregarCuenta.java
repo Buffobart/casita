@@ -204,7 +204,7 @@ public class FrmAgregarCuenta extends javax.swing.JInternalFrame {
                 operacion.setUsuario(new ClsEntidadEmpleadoHib(Integer.valueOf(FrmPrincipal.getInstance().strIdEmpleado)));
                 operacion.setHora(new Date());
                 
-                this.operacionDao.addOperacionAsIs(operacion);
+                this.operacionDao.addOperacion(operacion);
                 
             }
             JOptionPane.showMessageDialog(null, "Los datos se han guardado con exito en la base de datos.");
