@@ -1407,22 +1407,12 @@ private Connection connection=new ClsConexion().getConection();
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         
         inputToVO();
-        //venta.setClsEntidadDetalleventaHibCollection(this.detalles);
-        this.ventaDao.saveOrUpdateVenta(venta);
         
-        /*
-        double total = Double.parseDouble(txtTotalVenta.getText());
         ClsEntidadCuenta cuenta = this.cuentas.get(this.cboCuentas.getSelectedIndex());
-
-        ClsEntidadOperacionHib operacion = new ClsEntidadOperacionHib();
-        operacion.setTipo("VENTA");
-        operacion.setCuenta(cuenta);
-        operacion.setCantidad(BigDecimal.valueOf(total));
-        operacion.setUsuario(new ClsEntidadEmpleadoHib(Integer.valueOf(FrmPrincipal.getInstance().strIdEmpleado)));
-        operacion.setHora(new Date());
-        */
-
-        /** Save the log(operation) */
+        cuenta.setBalance(cuenta.getBalance().add(this.venta.getTotalPagar()));
+        
+        
+        this.ventaDao.saveOrUpdateVenta(venta);
         operacionDao.addOperacion(venta);
 
         if(this.chkOrdenDeCompra.isSelected()){

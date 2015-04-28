@@ -531,9 +531,16 @@ public class FrmLogin extends javax.swing.JFrame {
                     Logger.getLogger(FrmLogin.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
-                System.out.println("stating Hibernate conexion...");
-                HibernateUtil.getInstance();
-                System.out.println("stating Hibernate conexion... DONE");
+                try{
+                    System.out.println("stating Hibernate conexion...");
+                    HibernateUtil.getInstance();
+                    System.out.println("stating Hibernate conexion... DONE");
+
+                }catch(Exception e){
+                    System.err.println("there was an error initializig Hibernate, shutting down...");
+                    e.printStackTrace();
+                    System.exit(0);
+                }
                 
                 Presentacion.FrmLogin login = new Presentacion.FrmLogin();
                 login.setVisible(true);

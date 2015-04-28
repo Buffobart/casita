@@ -13,7 +13,6 @@ import daos.impl.OperacionDaoImpl;
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.swing.JOptionPane;
-import org.hibernate.Query;
 import org.hibernate.Session;
 
 /**
@@ -22,9 +21,9 @@ import org.hibernate.Session;
  */
 public class FrmAgregarCuenta extends javax.swing.JInternalFrame {
     
-    private final ClsEntidadCuenta cuenta;
+    private ClsEntidadCuenta cuenta;
     
-    OperacionDaoImpl operacionDao = new OperacionDaoImpl();
+    private OperacionDaoImpl operacionDao = new OperacionDaoImpl();
     
     /**
      * Creates new form FrmAgregarCuenta
@@ -167,49 +166,54 @@ public class FrmAgregarCuenta extends javax.swing.JInternalFrame {
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         // TODO add your handling code here:
         
-            Session session = HibernateUtil.getInstance().getSession();
+        String type = "ACTUALIZACION";
+
+        if(this.cuenta == null){
+            this.cuenta = new ClsEntidadCuenta();
+            type = "CUENTA_CREADA";
+        }
+
+        Session session = null;
+        BigDecimal montoInicial = this.cuenta.getBalance();
+        if(montoInicial == null){
+            montoInicial = BigDecimal.ZERO;
+        }
+
+        try{
+            session = HibernateUtil.getInstance().getSession();
             session.beginTransaction();
-            
+
 //            PreparedStatement st = session.
-            
-            Query query = null;
-            if(this.cuenta == null){
-                query = session.getNamedQuery("callInsertCuenta");
-            }else{
-                query = session.getNamedQuery("callUpdateCuenta");
-            }
-            //query.setParameter("stockCode", "7277");
-            int id;
-            String id_string = this.txtID.getText();
-            id = ( id_string.equals("") ) ? 0 : Integer.parseInt(id_string);
-            
-            query.setInteger("idCuenta", id );
-            query.setString("nombre", this.txtNombre.getText() );
-            query.setString("descripcion", this.txtDescripcion.getText() );
-            query.setBoolean("cuentaDefault", this.chkDefault.isSelected() );
-            query.setBigDecimal("balance", new BigDecimal( this.txtBalance.getText() ));
-            
-            query.executeUpdate();
+            this.cuenta.setNombre(this.txtNombre.getText());
+            this.cuenta.setDescripcion(this.txtDescripcion.getText());
+            this.cuenta.setCuentaDefault(this.chkDefault.isSelected());
+            this.cuenta.setBalance(new BigDecimal( this.txtBalance.getText() ));
+
+            session.saveOrUpdate(this.cuenta);
             session.getTransaction().commit();
-            session.close();
-            
-            if(this.cuenta != null){
-                ClsEntidadOperacionHib operacion = new ClsEntidadOperacionHib();
-                
-                operacion.setTipo("ACTUALIZACION");
-                operacion.setCuenta(cuenta);
-                operacion.setCantidad(BigDecimal.ZERO);
-                operacion.setMontoInicial(cuenta.getBalance());
-                operacion.setMontoFinal(new BigDecimal( this.txtBalance.getText() ));
-                operacion.setUsuario(new ClsEntidadEmpleadoHib(Integer.valueOf(FrmPrincipal.getInstance().strIdEmpleado)));
-                operacion.setHora(new Date());
-                
-                this.operacionDao.addOperacion(operacion);
-                
+        }finally{
+            if(session != null){
+                session.close();
             }
-            JOptionPane.showMessageDialog(null, "Los datos se han guardado con exito en la base de datos.");
-            
-            this.dispose();
+        }
+
+        if(this.cuenta != null){
+            ClsEntidadOperacionHib operacion = new ClsEntidadOperacionHib();
+
+            operacion.setTipo(type);
+            operacion.setCuenta(cuenta);
+            operacion.setCantidad(cuenta.getBalance().subtract(montoInicial));
+            operacion.setMontoInicial(montoInicial);
+            operacion.setMontoFinal(cuenta.getBalance());
+            operacion.setUsuario(new ClsEntidadEmpleadoHib(Integer.valueOf(FrmPrincipal.getInstance().strIdEmpleado)));
+            operacion.setHora(new Date());
+
+            this.operacionDao.addOperacion(operacion);
+
+        }
+        JOptionPane.showMessageDialog(null, "Los datos se han guardado con exito en la base de datos.");
+
+        this.dispose();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed

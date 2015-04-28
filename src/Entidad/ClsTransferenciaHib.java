@@ -171,8 +171,8 @@ public class ClsTransferenciaHib implements Serializable, IntOperacion {
         operacionOrigen.setTipo(ClsEntidadOperacionHib.TIPO_TRANS_OUT);
         operacionOrigen.setCuenta(this.cuentaOrigen);
         operacionOrigen.setCantidad(this.cantidad);
-        operacionOrigen.setMontoFinal(this.cuentaDestino.getBalance());
-        operacionOrigen.setMontoInicial(this.cuentaDestino.getBalance().add(cantidad));
+        operacionOrigen.setMontoFinal(this.cuentaOrigen.getBalance());
+        operacionOrigen.setMontoInicial(this.cuentaOrigen.getBalance().add(cantidad));
         operacionOrigen.setUsuario(new ClsEntidadEmpleadoHib(Integer.valueOf(FrmPrincipal.getInstance().strIdEmpleado)));
         operacionOrigen.setHora(new Date());
         

@@ -216,7 +216,6 @@ public class FrmCuentas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
         int row = this.jTable1.getSelectedRow();
         FrmAgregarCuenta fac = new FrmAgregarCuenta(this.cuentas.get(row));
         fac.addInternalFrameListener(new InternalFrameEventHandler());
@@ -225,7 +224,10 @@ public class FrmCuentas extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        FrmTransferenciaCuentas trans = new FrmTransferenciaCuentas();
+        trans.setAccounts(this.cuentas, this.cuentas);
+        FrmPrincipal.Escritorio.add(trans);
+        trans.setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
 

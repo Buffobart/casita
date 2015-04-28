@@ -29,6 +29,8 @@
         <mapping class="Entidad.ClsEntidadMonedaHib"></mapping>
         <mapping class="Entidad.ClsEntidadOperacionHib"></mapping>
         <mapping class="Entidad.ClsEntidadProveedorContactoHib"></mapping>
+        <mapping class="Entidad.ClsGastosVariosHib"></mapping>
+        <mapping class="Entidad.ClsTransferenciaHib"></mapping>
         
     </session-factory>
 </hibernate-configuration>

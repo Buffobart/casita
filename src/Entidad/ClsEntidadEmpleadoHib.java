@@ -52,6 +52,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "ClsEntidadEmpleadoHib.findByEstado", query = "SELECT c FROM ClsEntidadEmpleadoHib c WHERE c.estado = :estado"),
     @NamedQuery(name = "ClsEntidadEmpleadoHib.findByUsuario", query = "SELECT c FROM ClsEntidadEmpleadoHib c WHERE c.usuario = :usuario")})
 public class ClsEntidadEmpleadoHib implements Serializable {
+    @OneToMany(mappedBy = "usuario")
+    private Collection<ClsTransferenciaHib> clsTransferenciaHibCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmpleado")
     private Collection<ClsEntidadCompraHib> clsEntidadCompraHibCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "idEmpleado")
@@ -301,6 +303,15 @@ public class ClsEntidadEmpleadoHib implements Serializable {
 
     public void setClsEntidadVentaHibCollection(Collection<ClsEntidadVentaHib> clsEntidadVentaHibCollection) {
         this.clsEntidadVentaHibCollection = clsEntidadVentaHibCollection;
+    }
+
+    @XmlTransient
+    public Collection<ClsTransferenciaHib> getClsTransferenciaHibCollection() {
+        return clsTransferenciaHibCollection;
+    }
+
+    public void setClsTransferenciaHibCollection(Collection<ClsTransferenciaHib> clsTransferenciaHibCollection) {
+        this.clsTransferenciaHibCollection = clsTransferenciaHibCollection;
     }
     
 }
