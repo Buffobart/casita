@@ -1088,7 +1088,9 @@ void CalcularTotal(){
                 operacion.setUsuario(new ClsEntidadEmpleadoHib(Integer.valueOf(FrmPrincipal.getInstance().strIdEmpleado)));
                 operacion.setHora(new Date());
                 
-                operacionDao.addOperacion(operacion);
+                this.operacionDao.addOperacion(operacion);
+                this.cuentasDao.saveOrUpdateCuenta(cuenta);
+                
                 
             }
             mirar();

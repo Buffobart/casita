@@ -1413,7 +1413,8 @@ private Connection connection=new ClsConexion().getConection();
         
         
         this.ventaDao.saveOrUpdateVenta(venta);
-        operacionDao.addOperacion(venta);
+        this.operacionDao.addOperacion(venta);
+        this.cuentasDao.saveOrUpdateCuenta(cuenta);
 
         if(this.chkOrdenDeCompra.isSelected()){
             generarOrdenDeCompra(venta);

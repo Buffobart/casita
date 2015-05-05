@@ -7,7 +7,9 @@ package Entidad;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +39,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ClsGastosVariosHib.findByCantidad", query = "SELECT c FROM ClsGastosVariosHib c WHERE c.cantidad = :cantidad"),
     @NamedQuery(name = "ClsGastosVariosHib.findByFecha", query = "SELECT c FROM ClsGastosVariosHib c WHERE c.fecha = :fecha"),
     @NamedQuery(name = "ClsGastosVariosHib.findByTotal", query = "SELECT c FROM ClsGastosVariosHib c WHERE c.total = :total")})
-public class ClsGastosVariosHib implements Serializable {
+public class ClsGastosVariosHib implements Serializable, IntOperacion {
+    @Column(name = "PRECIO")
+    private BigDecimal precio;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -158,6 +162,34 @@ public class ClsGastosVariosHib implements Serializable {
     @Override
     public String toString() {
         return "Entidad.ClsGastosVariosHib[ id=" + id + " ]";
+    }
+
+    public BigDecimal getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(BigDecimal precio) {
+        this.precio = precio;
+    }
+
+    @Override
+    public List<ClsEntidadOperacionHib> getOperaciones() {
+        
+        ClsEntidadOperacionHib operacion = new ClsEntidadOperacionHib();
+        
+        operacion.setTipo(ClsEntidadOperacionHib.TIPO_GASTOS_VARIOS);
+        operacion.setHora(new Date());
+        operacion.setCantidad(this.getTotal());
+        operacion.setCuenta(this.getCuenta());
+        operacion.setUsuario(this.getUsuario());
+        operacion.setMontoFinal(this.getCuenta().getBalance());
+        operacion.setMontoInicial(this.getCuenta().getBalance().add(this.getTotal()));
+        
+        ArrayList<ClsEntidadOperacionHib> operaciones = new ArrayList<>();
+        operaciones.add(operacion);
+        
+        return operaciones;
+        
     }
     
 }

@@ -204,6 +204,7 @@ void BuscarPermisos(){
         mnuCuentas = new javax.swing.JMenu();
         mCuentas = new javax.swing.JMenuItem();
         mOperaciones = new javax.swing.JMenuItem();
+        mGastosVarios = new javax.swing.JMenuItem();
         mnuAnulaciones = new javax.swing.JMenu();
         mAnularv = new javax.swing.JMenuItem();
         mAnularc = new javax.swing.JMenuItem();
@@ -601,6 +602,14 @@ void BuscarPermisos(){
             }
         });
         mnuCuentas.add(mOperaciones);
+
+        mGastosVarios.setText("Gastos Varios");
+        mGastosVarios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mGastosVariosActionPerformed(evt);
+            }
+        });
+        mnuCuentas.add(mGastosVarios);
 
         jMenuBar1.add(mnuCuentas);
 
@@ -1111,6 +1120,13 @@ void BuscarPermisos(){
         
     }//GEN-LAST:event_mOperacionesActionPerformed
 
+    private void mGastosVariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mGastosVariosActionPerformed
+        // TODO add your handling code here:
+        FrmGastosVarios gastos = new FrmGastosVarios();
+        Escritorio.add(gastos);
+        gastos.setVisible(true);
+    }//GEN-LAST:event_mGastosVariosActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1187,6 +1203,7 @@ void BuscarPermisos(){
     private javax.swing.JMenuItem mEmpleado;
     private javax.swing.JMenuItem mEstadistica;
     private javax.swing.JMenuItem mEstado;
+    private javax.swing.JMenuItem mGastosVarios;
     private javax.swing.JMenuItem mOperaciones;
     private javax.swing.JMenuItem mProducto;
     private javax.swing.JMenuItem mProveedor;

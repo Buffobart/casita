@@ -5,17 +5,16 @@
  */
 package daos;
 
-import Entidad.ClsEntidadCuenta;
+import Entidad.ClsGastosVariosHib;
 import java.util.List;
 
 /**
  *
  * @author Alan
  */
-public interface CuentaDao {
+public interface GastosVariosDao {
     
-    public List<ClsEntidadCuenta> getAllCuentas();
-    public void saveOrUpdateCuenta(ClsEntidadCuenta cuenta);
-    public void saveOrUpdateCuentas(List<ClsEntidadCuenta> cuentas);
+    public List<ClsGastosVariosHib> getAllGastos();
+    public void addGasto(ClsGastosVariosHib gasto);
     
 }

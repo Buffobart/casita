@@ -31,7 +31,7 @@ public class CuentaDaoImpl implements CuentaDao{
     }
 
     @Override
-    public void saveCuenta(ClsEntidadCuenta cuenta) {
+    public void saveOrUpdateCuenta(ClsEntidadCuenta cuenta) {
         
         Session session = null;
         
@@ -50,7 +50,7 @@ public class CuentaDaoImpl implements CuentaDao{
     }
 
     @Override
-    public void saveCuentas(List<ClsEntidadCuenta> cuentas) {
+    public void saveOrUpdateCuentas(List<ClsEntidadCuenta> cuentas) {
         Session session = null;
         
         try{

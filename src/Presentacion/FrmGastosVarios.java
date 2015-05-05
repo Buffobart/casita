@@ -5,17 +5,54 @@
  */
 package Presentacion;
 
+import Entidad.ClsGastosVariosHib;
+import daos.GastosVariosDao;
+import daos.impl.GastosVariosDaoImpl;
+import java.util.List;
+import java.util.Vector;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Alan
  */
 public class FrmGastosVarios extends javax.swing.JInternalFrame {
 
+    GastosVariosDao gastosVariosDao = new GastosVariosDaoImpl();
     /**
      * Creates new form FrmGastosVarios
      */
     public FrmGastosVarios() {
         initComponents();
+        loadGastosVarios();
+    }
+    
+    public void loadGastosVarios(){
+        
+        DefaultTableModel dtm = new DefaultTableModel();
+        String titulos[]={"ID","Descripcion","Fecha","Cantidad","Precio","Total","Cuenta","Usuario","Producto"};
+        dtm.setColumnIdentifiers(titulos);
+        
+        List<ClsGastosVariosHib> gastos = gastosVariosDao.getAllGastos();
+        
+        for(ClsGastosVariosHib gasto : gastos){
+            
+            Vector datos = new Vector();
+            datos.add(gasto.getId());
+            datos.add(gasto.getDescripcion());
+            datos.add(gasto.getFecha());
+            datos.add(gasto.getCantidad());
+            datos.add(gasto.getPrecio());
+            datos.add(gasto.getTotal());
+            datos.add(gasto.getCuenta().getNombre());
+            datos.add(gasto.getUsuario().getUsuario());
+            datos.add(gasto.getIdProducto()!=null?gasto.getIdProducto().getNombre():null);
+            
+            dtm.addRow(datos);
+        }
+        
+        this.tblGastos.setModel(dtm);
+        
     }
 
     /**
@@ -27,21 +64,77 @@ public class FrmGastosVarios extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblGastos = new javax.swing.JTable();
+        jPanel2 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+
+        setClosable(true);
+        setResizable(true);
+        setTitle("Gastos Varios");
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Gastos de articulos varios"));
+
+        tblGastos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblGastos);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 628, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
+                .addContainerGap())
         );
+
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
+
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton1.setText("Agregar un gasto");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton1);
+
+        getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_END);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        FrmAddGastoVario addGastoVario = new FrmAddGastoVario(this);
+        FrmPrincipal.Escritorio.add(addGastoVario);
+        addGastoVario.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable tblGastos;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,17 +5,101 @@
  */
 package Presentacion;
 
+import Entidad.ClsEntidadCuenta;
+import Entidad.ClsEntidadProductoHib;
+import Entidad.ClsGastosVariosHib;
+import daos.CuentaDao;
+import daos.GastosVariosDao;
+import daos.OperacionDao;
+import daos.ProductoDao;
+import daos.impl.CuentaDaoImpl;
+import daos.impl.GastosVariosDaoImpl;
+import daos.impl.OperacionDaoImpl;
+import daos.impl.ProductoDaoImpl;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
+
 /**
  *
  * @author Alan
  */
 public class FrmAddGastoVario extends javax.swing.JInternalFrame {
 
+    CuentaDao cuentaDao = new CuentaDaoImpl();
+    ProductoDao productoDao = new ProductoDaoImpl();
+    GastosVariosDao gastosVariosDao = new GastosVariosDaoImpl();
+    OperacionDao operacionDao = new OperacionDaoImpl();
+    
+    List<ClsEntidadCuenta> cuentas;
+    List<ClsEntidadProductoHib> productos;
+    
+    FrmGastosVarios parent;
+    
+    private static final String OTROS = "Otros.";
+    
     /**
      * Creates new form FrmAddGastoVario
      */
     public FrmAddGastoVario() {
         initComponents();
+        initValues();
+    }
+    
+    public FrmAddGastoVario(FrmGastosVarios parent) {
+        this();
+        this.parent = parent;
+    }
+    
+    private void initValues(){
+        loadCuentas();
+        loadProductos();
+        
+        this.dateFecha.setDate(new Date());
+        this.txtUsuario.setText(FrmPrincipal.getInstance().getEmpleado().getNombre());
+    }
+    
+    private void loadCuentas(){
+        
+        this.cuentas = cuentaDao.getAllCuentas();
+        
+        Vector cuentasVector = new Vector();
+        for(ClsEntidadCuenta cuenta: this.cuentas){
+            cuentasVector.add(cuenta.getNombre());
+        }
+        
+        this.cboCuentas.setModel(new DefaultComboBoxModel(cuentasVector));
+    }
+    
+    private void loadProductos(){
+        this.productos = productoDao.getAllProductos(false);
+        
+        Vector productosVector = new Vector();
+        
+        for(ClsEntidadProductoHib producto: this.productos){
+            productosVector.add(producto.getCodigo() + "-" +producto.getNombre());
+        }
+        productosVector.add(OTROS);
+        
+        this.cboProductos.setModel(new DefaultComboBoxModel(productosVector));
+        this.cboProductos.setSelectedItem(OTROS);
+    }
+    
+    private boolean validateFields(){
+        
+        if(this.txtDescipcion.getText().trim().equals("")){
+            return false;
+        }
+        if(this.dateFecha.getDate() == null){
+            return false;
+        }
+        if(this.txtTotal.getText().trim().equals("")){
+            return false;
+        }
+        
+        return true;
     }
 
     /**
@@ -28,22 +112,206 @@ public class FrmAddGastoVario extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtId = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        txtDescipcion = new javax.swing.JTextArea();
+        jLabel3 = new javax.swing.JLabel();
+        txtCantidad = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        dateFecha = new com.toedter.calendar.JDateChooser();
+        jLabel5 = new javax.swing.JLabel();
+        cboCuentas = new javax.swing.JComboBox();
+        jLabel6 = new javax.swing.JLabel();
+        txtUsuario = new javax.swing.JTextField();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        txtPrecio = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        txtTotal = new javax.swing.JTextField();
+        cboProductos = new javax.swing.JComboBox();
+        jLabel13 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
+        setClosable(true);
+        setResizable(true);
+        setTitle("Gastos Varios");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("ID:");
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, -1));
 
-        jTextField1.setText("jTextField1");
-        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, -1));
+        txtId.setEditable(false);
+        getContentPane().add(txtId, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, 110, -1));
+
+        jLabel2.setText("Descripcion:");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, -1, -1));
+
+        txtDescipcion.setColumns(20);
+        txtDescipcion.setRows(5);
+        jScrollPane1.setViewportView(txtDescipcion);
+
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 320, 80));
+
+        jLabel3.setText("Cantidad:");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, -1, -1));
+
+        txtCantidad.setText("1");
+        getContentPane().add(txtCantidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 360, 60, -1));
+
+        jLabel4.setText("Fecha:");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 280, -1, -1));
+        getContentPane().add(dateFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 300, 140, -1));
+
+        jLabel5.setText("Cuenta:");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, -1, -1));
+
+        cboCuentas.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        getContentPane().add(cboCuentas, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 280, -1));
+
+        jLabel6.setText("Usuario:");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 280, -1, -1));
+
+        txtUsuario.setEditable(false);
+        txtUsuario.setText("Usuario");
+        getContentPane().add(txtUsuario, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 300, 120, -1));
+
+        jLabel7.setForeground(java.awt.Color.red);
+        jLabel7.setText("*");
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 300, -1, -1));
+
+        jLabel8.setForeground(java.awt.Color.red);
+        jLabel8.setText("*");
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 360, -1, -1));
+
+        jLabel9.setForeground(java.awt.Color.red);
+        jLabel9.setText("*");
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 190, -1, -1));
+
+        jLabel10.setForeground(java.awt.Color.red);
+        jLabel10.setText("*");
+        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 80, -1, -1));
+
+        jLabel11.setText("Precio:");
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 340, -1, -1));
+
+        txtPrecio.setText("0");
+        getContentPane().add(txtPrecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 360, 60, -1));
+
+        jLabel12.setText("Total:");
+        getContentPane().add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 340, -1, -1));
+
+        txtTotal.setText("0");
+        getContentPane().add(txtTotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 360, 60, -1));
+
+        cboProductos.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cboProductos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboProductosActionPerformed(evt);
+            }
+        });
+        getContentPane().add(cboProductos, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, 280, -1));
+
+        jLabel13.setText("Producto:");
+        getContentPane().add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, -1, -1));
+
+        jButton1.setText("Guardar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 400, -1, -1));
+
+        jButton2.setText("Cancelar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 400, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        if(validateFields()){
+            
+            ClsGastosVariosHib gasto = new ClsGastosVariosHib();
+            
+            ClsEntidadCuenta cuenta = this.cuentas.get(this.cboCuentas.getSelectedIndex());
+            cuenta.setBalance(cuenta.getBalance().subtract(new BigDecimal( this.txtTotal.getText() )));
+            
+            gasto.setCantidad( Integer.parseInt(this.txtCantidad.getText()) );
+            gasto.setCuenta(cuenta);
+            gasto.setDescripcion(this.txtDescipcion.getText());
+            gasto.setFecha(this.dateFecha.getDate());
+            if(!this.cboProductos.getSelectedItem().equals(OTROS)){
+                gasto.setIdProducto(this.productos.get(this.cboProductos.getSelectedIndex()));
+            }
+            gasto.setPrecio(new BigDecimal(this.txtPrecio.getText()));
+            gasto.setTotal(new BigDecimal(this.txtTotal.getText()));
+            gasto.setUsuario(FrmPrincipal.getInstance().getEmpleado());
+            
+            this.gastosVariosDao.addGasto(gasto);
+            this.operacionDao.addOperacion(gasto);
+            this.cuentaDao.saveOrUpdateCuenta(cuenta);
+            
+            if(this.parent != null){
+                this.parent.loadGastosVarios();
+            }
+            
+            this.dispose();
+            
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void cboProductosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboProductosActionPerformed
+        // TODO add your handling code here:
+        if(!this.cboProductos.getSelectedItem().equals(OTROS)){
+            ClsEntidadProductoHib selectedProducto = this.productos.get( this.cboProductos.getSelectedIndex() );
+            this.txtPrecio.setText(selectedProducto.getPrecioCosto().toString());
+            this.txtTotal.setText(selectedProducto.getPrecioCosto().multiply(new BigDecimal(this.txtCantidad.getText())).toString());
+        }
+        
+    }//GEN-LAST:event_cboProductosActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox cboCuentas;
+    private javax.swing.JComboBox cboProductos;
+    private com.toedter.calendar.JDateChooser dateFecha;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField txtCantidad;
+    private javax.swing.JTextArea txtDescipcion;
+    private javax.swing.JTextField txtId;
+    private javax.swing.JTextField txtPrecio;
+    private javax.swing.JTextField txtTotal;
+    private javax.swing.JTextField txtUsuario;
     // End of variables declaration//GEN-END:variables
 }

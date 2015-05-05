@@ -45,6 +45,7 @@ public class ClsEntidadOperacionHib implements Serializable {
     public static final String TIPO_COMPRA = "COMPRA";
     public static final String TIPO_TRANS_OUT = "TRANSFERENCIA RETIRO";
     public static final String TIPO_TRANS_IN = "TRANSFERENCIA DEPOSITO";
+    public static final String TIPO_GASTOS_VARIOS = "GASTOS VARIOS";
     
     private static final long serialVersionUID = 1L;
     @Id

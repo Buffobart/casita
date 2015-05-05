@@ -13,6 +13,7 @@ import daos.OperacionDao;
 import daos.impl.CuentaDaoImpl;
 import daos.impl.OperacionDaoImpl;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
@@ -254,22 +255,13 @@ public class FrmTransferenciaCuentas extends javax.swing.JInternalFrame {
                 }
             }
             
-            operacionDao.addOperacion(tranfer);
+            this.operacionDao.addOperacion(tranfer);
             
-            /*
-            operacionOrigen.setTipo("");
-            operacionOrigen.setCuenta(cuentaOrigen);
-            operacion.setCantidad(BigDecimal.valueOf(total));
-            operacion.setUsuario(new ClsEntidadEmpleadoHib(Integer.valueOf(FrmPrincipal.getInstance().strIdEmpleado)));
-            operacion.setHora(new Date());
-                    */
-
-            //operacionDao.addOperacion(operacion);
+            ArrayList<ClsEntidadCuenta> cuentasToUpdate = new ArrayList<>();
+            cuentasToUpdate.add(cuentaDestino);
+            cuentasToUpdate.add(cuentaOrigen);
             
-            //cuentasToUpdate.add(cuentaDestino);
-            //cuentasToUpdate.add(cuentaOrigen);
-            
-            //cuentaDao.saveCuentas( cuentasToUpdate );
+            cuentaDao.saveOrUpdateCuentas(cuentasToUpdate );
             
         }catch( java.lang.NumberFormatException e ){
             

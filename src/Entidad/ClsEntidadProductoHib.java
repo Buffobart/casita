@@ -7,6 +7,7 @@ package Entidad;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,8 +19,10 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -43,6 +46,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "ClsEntidadProductoHib.findByDescuentoProveedor", query = "SELECT c FROM ClsEntidadProductoHib c WHERE c.descuentoProveedor = :descuentoProveedor"),
     @NamedQuery(name = "ClsEntidadProductoHib.findByDescuentoVenta", query = "SELECT c FROM ClsEntidadProductoHib c WHERE c.descuentoVenta = :descuentoVenta")})
 public class ClsEntidadProductoHib implements Serializable {
+    @OneToMany(mappedBy = "idProducto")
+    private Collection<ClsGastosVariosHib> clsGastosVariosHibCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -258,6 +263,15 @@ public class ClsEntidadProductoHib implements Serializable {
     @Override
     public String toString() {
         return "Entidad.ClsEntidadProductoHib[ idProducto=" + idProducto + " ]";
+    }
+
+    @XmlTransient
+    public Collection<ClsGastosVariosHib> getClsGastosVariosHibCollection() {
+        return clsGastosVariosHibCollection;
+    }
+
+    public void setClsGastosVariosHibCollection(Collection<ClsGastosVariosHib> clsGastosVariosHibCollection) {
+        this.clsGastosVariosHibCollection = clsGastosVariosHibCollection;
     }
     
 }
